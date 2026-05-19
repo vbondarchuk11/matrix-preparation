@@ -1,6 +1,7 @@
 name: CI
 
 on:
+  # Validate all changes before merge and on shared branch updates.
   pull_request:
     branches:
       - main
@@ -11,6 +12,7 @@ on:
       - dev
 
 concurrency:
+  # Cancel older runs for the same ref so only the latest commit is verified.
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
@@ -19,6 +21,7 @@ permissions:
 
 jobs:
   verify:
+    # Single required quality gate used for branch protection.
     name: Lint, Test, and Build
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -33,25 +36,31 @@ jobs:
           node-version: 22
           cache: npm
 
+      # Use a clean install to keep CI deterministic with package-lock.json.
       - name: Install dependencies
         run: npm ci
 
+      # Formatting violations are enforced through Biome's repo-wide checks.
       - name: Lint and formatting checks
         run: npm run lint
 
       - name: TypeScript typecheck
         run: npm run typecheck
 
+      # Coverage runs the full Vitest suite and produces artifacts for review.
       - name: Run unit tests with coverage
         run: npm run coverage
 
+      # Catch production-only bundling or routing issues before deploy.
       - name: Build validation
         run: npm run build
 
+      # Publish a quick coverage table directly into the GitHub Actions summary UI.
       - name: Publish coverage summary
         run: |
           node -e "const fs=require('node:fs'); const summary=JSON.parse(fs.readFileSync('coverage/coverage-summary.json','utf8')).total; const report = ['## Coverage Summary','| Metric | Value |','| --- | --- |',`| Lines | ${summary.lines.pct}% |`,`| Statements | ${summary.statements.pct}% |`,`| Functions | ${summary.functions.pct}% |`,`| Branches | ${summary.branches.pct}% |`].join('\n') + '\n'; if (process.env.GITHUB_STEP_SUMMARY) { fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, report); } else { console.log(report); }"
 
+      # Keep coverage output available even when later steps fail.
       - name: Upload coverage artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -59,6 +68,7 @@ jobs:
           name: coverage-report
           path: coverage
 
+      # Save the validated production bundle for debugging or manual inspection.
       - name: Upload build artifact
         if: success()
         uses: actions/upload-artifact@v4

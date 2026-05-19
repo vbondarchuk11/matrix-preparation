@@ -1,12 +1,14 @@
 name: Deploy
 
 on:
+  # Deploy from main and package preview-ready artifacts from dev.
   push:
     branches:
       - main
       - dev
 
 concurrency:
+  # Prevent overlapping deployments for the same branch.
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
@@ -17,6 +19,7 @@ permissions:
 
 jobs:
   deploy-staging:
+    # Dev branch produces a build artifact that can be consumed by a staging process later.
     if: github.ref == 'refs/heads/dev'
     name: Package staging artifact
     runs-on: ubuntu-latest
@@ -38,6 +41,7 @@ jobs:
       - name: Build staging bundle
         run: npm run build
 
+      # Artifact-only flow keeps dev builds available without publishing to Pages.
       - name: Upload staging artifact
         uses: actions/upload-artifact@v4
         with:
@@ -45,10 +49,12 @@ jobs:
           path: dist
 
   deploy-production:
+    # Main branch is the only branch that publishes to the live Pages site.
     if: github.ref == 'refs/heads/main'
     name: Deploy production site
     runs-on: ubuntu-latest
     environment:
+      # GitHub Pages expects this reserved environment name.
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
@@ -68,14 +74,17 @@ jobs:
       - name: Build production bundle
         run: npm run build
 
+      # Prepares metadata required by the Pages deployment actions.
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
+      # Upload the built SPA as the Pages deployment artifact.
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
+      # Final publish step that updates the live site.
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
