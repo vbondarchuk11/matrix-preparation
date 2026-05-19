@@ -50,7 +50,7 @@ jobs:
 
       - name: Publish coverage summary
         run: |
-          node -e "const fs=require('node:fs'); const summary=JSON.parse(fs.readFileSync('coverage/coverage-summary.json','utf8')).total; fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Coverage Summary\n| Metric | Value |\n| --- | --- |\n| Lines | ${summary.lines.pct}% |\n| Statements | ${summary.statements.pct}% |\n| Functions | ${summary.functions.pct}% |\n| Branches | ${summary.branches.pct}% |\n`);"
+          node -e "const fs=require('node:fs'); const summary=JSON.parse(fs.readFileSync('coverage/coverage-summary.json','utf8')).total; const report = ['## Coverage Summary','| Metric | Value |','| --- | --- |',`| Lines | ${summary.lines.pct}% |`,`| Statements | ${summary.statements.pct}% |`,`| Functions | ${summary.functions.pct}% |`,`| Branches | ${summary.branches.pct}% |`].join('\n') + '\n'; if (process.env.GITHUB_STEP_SUMMARY) { fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, report); } else { console.log(report); }"
 
       - name: Upload coverage artifact
         if: always()
