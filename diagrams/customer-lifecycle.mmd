@@ -1,0 +1,6 @@
+stateDiagram-v2
+  [*] --> Lead
+  Lead --> Active: Converted
+  Active --> AtRisk: Adoption drops
+  AtRisk --> Active: Recovery plan works
+  AtRisk --> [*]: Churned

@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+  push:
+    branches:
+      - main
+      - dev
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Lint, Test, and Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint and formatting checks
+        run: npm run lint
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Run unit tests with coverage
+        run: npm run coverage
+
+      - name: Build validation
+        run: npm run build
+
+      - name: Publish coverage summary
+        run: |
+          node -e "const fs=require('node:fs'); const summary=JSON.parse(fs.readFileSync('coverage/coverage-summary.json','utf8')).total; fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Coverage Summary\n| Metric | Value |\n| --- | --- |\n| Lines | ${summary.lines.pct}% |\n| Statements | ${summary.statements.pct}% |\n| Functions | ${summary.functions.pct}% |\n| Branches | ${summary.branches.pct}% |\n`);"
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
+
+      - name: Upload build artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crm-dist
+          path: dist
