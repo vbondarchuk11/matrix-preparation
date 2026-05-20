@@ -113,149 +113,154 @@ function RouteFallback() {
   );
 }
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: "/auth",
+      element: (
+        <PublicOnly>
+          <Suspense fallback={<RouteFallback />}>
+            <AuthLayout />
+          </Suspense>
+        </PublicOnly>
+      ),
+      children: [
+        {
+          path: "login",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <LoginPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "forgot-password",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <LoginPage />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <Suspense fallback={<RouteFallback />}>
+            <AppLayout />
+          </Suspense>
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          index: true,
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <DashboardPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "customers",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <CustomersPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "customers/:customerId",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <CustomerDetailsPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "deals",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <DealsPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "deals/:dealId",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <DealDetailsPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "tasks",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <TasksPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "calendar",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <CalendarPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "reports",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <ReportsPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "team",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <TeamMembersPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "settings",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <SettingsPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "profile",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <ProfilePage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "notifications",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <NotificationsPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "audit-logs",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <AuditLogsPage />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+  ],
   {
-    path: "/auth",
-    element: (
-      <PublicOnly>
-        <Suspense fallback={<RouteFallback />}>
-          <AuthLayout />
-        </Suspense>
-      </PublicOnly>
-    ),
-    children: [
-      {
-        path: "login",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <LoginPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "forgot-password",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <LoginPage />
-          </Suspense>
-        ),
-      },
-    ],
+    basename: "/matrix-preparation",
   },
-  {
-    path: "/",
-    element: (
-      <ProtectedRoute>
-        <Suspense fallback={<RouteFallback />}>
-          <AppLayout />
-        </Suspense>
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <DashboardPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "customers",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <CustomersPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "customers/:customerId",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <CustomerDetailsPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "deals",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <DealsPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "deals/:dealId",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <DealDetailsPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "tasks",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <TasksPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "calendar",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <CalendarPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "reports",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <ReportsPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "team",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <TeamMembersPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "settings",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <SettingsPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "profile",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <ProfilePage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "notifications",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <NotificationsPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "audit-logs",
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <AuditLogsPage />
-          </Suspense>
-        ),
-      },
-    ],
-  },
-]);
+);
