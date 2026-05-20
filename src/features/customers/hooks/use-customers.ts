@@ -92,3 +92,5 @@ export function getCustomerDefaultValues(customer?: Customer) {
     notes: customer?.notes ?? "",
   } as const;
 }
+
+export type CustomerFormDefaults = ReturnType<typeof getCustomerDefaultValues>;

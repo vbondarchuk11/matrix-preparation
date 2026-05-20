@@ -31,6 +31,7 @@ import {
   CUSTOMER_STATUS_OPTIONS,
 } from "@/constants/crm";
 import {
+  type CustomerFormDefaults,
   getCustomerDefaultValues,
   useCreateCustomer,
   useUpdateCustomer,
@@ -57,14 +58,17 @@ export function CustomerFormDialog({
 }: CustomerFormDialogProps) {
   const createCustomer = useCreateCustomer();
   const updateCustomer = useUpdateCustomer();
+  const defaultValues: CustomerFormDefaults = getCustomerDefaultValues(
+    customer ?? undefined,
+  );
   const form = useForm<CustomerSchema>({
     resolver: zodResolver(customerSchema),
-    defaultValues: getCustomerDefaultValues(customer ?? undefined),
+    defaultValues,
   });
 
   useEffect(() => {
-    form.reset(getCustomerDefaultValues(customer ?? undefined));
-  }, [customer, form]);
+    form.reset(defaultValues);
+  }, [defaultValues, form]);
 
   const onSubmit = form.handleSubmit(async (values) => {
     if (customer) {
