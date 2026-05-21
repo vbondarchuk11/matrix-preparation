@@ -1,0 +1,28 @@
+flowchart LR
+  user["Person: Sales/User<br/>Uses CRM in browser"]
+
+  subgraph system["System: Matrix CRM Frontend"]
+    browser["Web App Container<br/>React + TypeScript + Vite"]
+    routing["Routing Layer<br/>React Router"]
+    ui["UI Component Layer<br/>Reusable Radix/Tailwind components"]
+    features["Feature/Page Layer<br/>Dashboard, Customers, Deals, Tasks, Reports"]
+    state["Client State<br/>Zustand auth store + React Query cache"]
+    services["Service Layer<br/>authService, crmService, customerService"]
+    api["API Client<br/>Axios instance + interceptors + adapter"]
+    mock["Mock Backend Adapter<br/>window.fetch interception"]
+    dataset["Mock Data Store<br/>CRM entities in memory"]
+  end
+
+  user --> browser
+  browser --> routing
+  routing --> features
+  features --> ui
+  features --> state
+  features --> services
+  services --> api
+  api --> mock
+  mock --> dataset
+  state --> browser
+
+  api -. "Authorization header,\n401 handling" .-> state
+  state -. "session hydrate,\ncross-tab sync" .-> browser

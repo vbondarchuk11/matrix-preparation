@@ -1,0 +1,33 @@
+flowchart TB
+  subgraph presentation["Presentation Layer"]
+    router["Router<br/>src/pages/router.tsx"]
+    layouts["Layouts<br/>AppLayout, AuthLayout"]
+    pages["Pages<br/>Dashboard, Customers, Deals, Tasks, Reports, Settings"]
+    ui["Reusable UI Components<br/>Button, Dialog, Table, Select, Sidebar"]
+  end
+
+  subgraph application["Application Layer"]
+    hooks["Feature Hooks<br/>useLogin, useCustomers, useListState"]
+    validation["Validation Schemas<br/>Zod login/customer schemas"]
+    store["State Store<br/>auth-store"]
+  end
+
+  subgraph infrastructure["Infrastructure Layer"]
+    services["Service Objects<br/>authService, crmService, customerService"]
+    client["API Client<br/>src/services/api.ts"]
+    server["Mock Server<br/>src/services/mockServer.ts"]
+    data["Mock Data<br/>src/services/mock-data.ts"]
+  end
+
+  router --> layouts
+  layouts --> pages
+  pages --> ui
+  pages --> hooks
+  pages --> store
+  hooks --> validation
+  hooks --> services
+  services --> client
+  client --> server
+  server --> data
+  client -. token/session .-> store
+  ui -. shared styling .-> pages

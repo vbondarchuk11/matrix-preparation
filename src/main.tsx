@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { router } from "@/pages/router";
-import { useAuthStore } from "@/store/auth-store";
+import { initializeAuthSync, useAuthStore } from "@/store/auth-store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -19,6 +19,7 @@ const queryClient = new QueryClient({
 });
 
 useAuthStore.getState().hydrate();
+initializeAuthSync();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
