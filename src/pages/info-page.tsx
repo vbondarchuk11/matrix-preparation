@@ -1554,7 +1554,11 @@ export function InfoPage() {
             <ChartCard
               title={theme.label}
               description={theme.description}
-              action={<Badge variant="default">{theme.sections.length} sections</Badge>}
+              action={
+                <Badge variant="default">
+                  {theme.sections.length} sections
+                </Badge>
+              }
             >
               <p className="text-sm leading-7 text-muted-foreground">
                 This tab groups the topic into focused sections so it is easier
