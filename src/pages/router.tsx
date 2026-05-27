@@ -53,6 +53,11 @@ const ReportsPage = lazy(() =>
     default: module.ReportsPage,
   })),
 );
+const InfoPage = lazy(() =>
+  import("@/pages/info-page").then((module) => ({
+    default: module.InfoPage,
+  })),
+);
 const TeamMembersPage = lazy(() =>
   import("@/pages/team-members-page").then((module) => ({
     default: module.TeamMembersPage,
@@ -214,6 +219,14 @@ export const router = createBrowserRouter(
           element: (
             <Suspense fallback={<RouteFallback />}>
               <ReportsPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "info",
+          element: (
+            <Suspense fallback={<RouteFallback />}>
+              <InfoPage />
             </Suspense>
           ),
         },

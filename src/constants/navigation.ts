@@ -1,6 +1,7 @@
 import {
   BarChart3,
   Bell,
+  BookOpen,
   CalendarDays,
   ClipboardList,
   FileClock,
@@ -19,6 +20,7 @@ export const navigationItems = [
   { label: "Tasks", href: "/tasks", icon: ClipboardList },
   { label: "Calendar", href: "/calendar", icon: CalendarDays },
   { label: "Reports", href: "/reports", icon: BarChart3 },
+  { label: "Info", href: "/info", icon: BookOpen },
   { label: "Team", href: "/team", icon: Users2 },
   { label: "Notifications", href: "/notifications", icon: Bell },
   { label: "Audit Logs", href: "/audit-logs", icon: FileClock },
